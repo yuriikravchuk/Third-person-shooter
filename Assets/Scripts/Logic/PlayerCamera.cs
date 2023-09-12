@@ -14,10 +14,7 @@ public class PlayerCamera : MonoBehaviour
     private Vector3 _velocity, _targetRotation;
     private bool _invertYAxis = true;
 
-    private void Awake()
-    {
-        _targetRotation = _rotationPoint.rotation.eulerAngles;
-    }
+    private void Awake() => _targetRotation = _rotationPoint.rotation.eulerAngles;
 
     private void LateUpdate()
     {
@@ -29,10 +26,7 @@ public class PlayerCamera : MonoBehaviour
             _cube.transform.position = hit.point;
     }
 
-    public void SetSensivity(float value)
-    {
-        _sensivity = value;
-    }
+    public void SetSensivity(float value) => _sensivity = value;
 
     public void InvertYAxisChanged(bool value) => _invertYAxis = value;
 
