@@ -12,6 +12,7 @@ public class PlayerCamera : MonoBehaviour
     public Transform RotationPoint => _rotationPoint;
 
     private Vector3 _velocity, _targetRotation;
+    private bool _invertYAxis = true;
 
     private void Awake()
     {
@@ -33,10 +34,12 @@ public class PlayerCamera : MonoBehaviour
         _sensivity = value;
     }
 
+    public void InvertYAxisChanged(bool value) => _invertYAxis = value;
+
     public void Rotate(Vector2 delta)
     {
         _targetRotation.y += delta.x * _sensivity;
-        _targetRotation.x += delta.y * _sensivity;
+        _targetRotation.x += delta.y * (_invertYAxis ? -_sensivity : _sensivity); ;
         _targetRotation.x = Mathf.Clamp(_targetRotation.x, -40, 65);
     }
 }
