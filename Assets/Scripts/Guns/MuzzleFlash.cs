@@ -15,7 +15,7 @@ public class MuzzleFlash : MonoBehaviour
         {
             _spriteRenderers[i].sprite = _flashSprites[_flashIndex];
         }
-        bulletParticle.Play();
+        //bulletParticle.Play();
         Invoke(nameof(Deactivate), _flashTime);
     }
 

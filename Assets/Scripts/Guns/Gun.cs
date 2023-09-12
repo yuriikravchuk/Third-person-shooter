@@ -40,7 +40,7 @@ public class Gun : MonoBehaviour
     private void Shoot(IDamageable target)
     {
         target.TryTakeDamage(_damage);
-        //_muzzleFlash.Activate();
+        _muzzleFlash.Activate();
         //SpawnShell();
     }
 
