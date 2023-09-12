@@ -5,7 +5,7 @@ namespace stateMachine
 {
     public abstract class HierarchicalState : State
     {
-        protected HierarchicalState SubState;
+        protected HierarchicalState SubState { get; private set; }
         protected List<HierarchicalState> SubStates;
         protected HierarchicalState SuperState;
 
@@ -16,9 +16,7 @@ namespace stateMachine
             if (SubState != null && SubState.CanTransit(nextSubState) == false) 
                 return;
 
-            SubState = nextSubState;
-            SubState.SetSuperState(this);
-            SubState.Enter();
+            SetSubState(nextSubState);
         }
 
         public void SetSuperState(HierarchicalState superState) => SuperState = superState;
@@ -49,6 +47,16 @@ namespace stateMachine
 
         protected virtual void InitSubState() { }
 
+
+        
         protected virtual void OnSubStateChanged(HierarchicalState state) { } 
+
+        private void SetSubState(HierarchicalState state)
+        {
+            OnSubStateChanged(state);
+            SubState = state;
+            SubState.SetSuperState(this);
+            SubState.Enter();
+        }
     }
 }

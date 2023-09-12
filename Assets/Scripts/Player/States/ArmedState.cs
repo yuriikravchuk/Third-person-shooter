@@ -33,6 +33,16 @@ public class ArmedState : HierarchicalState // rotate towards camera
         _playerInput.Player.Second_Weapon.performed += e => _gunHandler.OnGunSelected(1);
         _playerInput.Player.Third_Weapon.performed += e => _gunHandler.OnGunSelected(2);
     }
+    public override bool CanTransit(State state)
+    {
+        if (SubState != null && SubState.CanTransit(state)) return true;
+
+        return state switch
+        {
+            DisarmedState => true,
+            _ => false,
+        };
+    }
 
     protected override void OnEnter()
     {
@@ -63,18 +73,6 @@ public class ArmedState : HierarchicalState // rotate towards camera
             _gunHandler.TryFire();
     }
 
-
-    public override bool CanTransit(State state)
-    {
-        if (SubState != null && SubState.CanTransit(state)) return true;
-
-        return state switch
-        {
-            DisarmedState => true,
-            _ => false,
-        };
-    }
-
     protected override void OnSubStateChanged(HierarchicalState state)
     {
         switch(state)
@@ -92,5 +90,10 @@ public class ArmedState : HierarchicalState // rotate towards camera
                 _playerView.StopAiming();
                 break;
         }
+    }
+
+    protected override void InitSubState()
+    {
+        TrySetSubState<RunningState>();
     }
 }
