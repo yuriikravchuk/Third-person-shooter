@@ -74,4 +74,23 @@ public class ArmedState : HierarchicalState // rotate towards camera
             _ => false,
         };
     }
+
+    protected override void OnSubStateChanged(HierarchicalState state)
+    {
+        switch(state)
+        {
+            case RunningState:
+                _playerView.Aim();
+                break;
+            case SprintingState:
+                _playerView.StopAiming();
+                break;
+            case AimingState:
+                _playerView.Aim();
+                break;
+            case JumpingState:
+                _playerView.StopAiming();
+                break;
+        }
+    }
 }

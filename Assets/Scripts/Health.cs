@@ -4,11 +4,15 @@ public class Health
     public float Value { get; private set; }
     public bool Damageable { get; set; } = true;
     public event Action Died;
+    public event Action<float> ValueChanged;
 
     private readonly int _maxValue;
 
-    public Health(int maxValue) 
-        => _maxValue = maxValue;
+    public Health(int maxValue)
+    {
+        _maxValue = maxValue;
+        Reset();
+    }
 
     public void ApplyDamage(int damage)
     {
@@ -16,6 +20,8 @@ public class Health
         if (damage < 0) throw new ArgumentOutOfRangeException(nameof(damage));
 
         Value -= damage;
+
+        ValueChanged?.Invoke(Value);
 
         if (Value <= 0)
         {

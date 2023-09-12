@@ -13,13 +13,12 @@ namespace stateMachine
         {
             HierarchicalState nextSubState = SubStates.Find(x => x is T) ?? throw new InvalidOperationException();
 
-            if (SubState != null && SubState.CanTransit(nextSubState) == false || SubState == nextSubState) 
+            if (SubState != null && SubState.CanTransit(nextSubState) == false) 
                 return;
 
             SubState = nextSubState;
             SubState.SetSuperState(this);
             SubState.Enter();
-            UnityEngine.Debug.Log(typeof(T));
         }
 
         public void SetSuperState(HierarchicalState superState) => SuperState = superState;
@@ -34,8 +33,6 @@ namespace stateMachine
 
                 InitSubState();
             }
-
-
         }
 
         public sealed override void Update()
@@ -51,5 +48,7 @@ namespace stateMachine
         }
 
         protected virtual void InitSubState() { }
+
+        protected virtual void OnSubStateChanged(HierarchicalState state) { } 
     }
 }

@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour, IDamageable, IDieable
 
     private void Awake()
     {
-        _health = new Health(100);
+        _health = new Health(30);
         _health.Died += Die;
     }
 

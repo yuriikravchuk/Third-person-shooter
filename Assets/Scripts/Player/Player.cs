@@ -3,15 +3,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IDamageable, IDieable
 {
-    [SerializeField] private int _maxHealth = 100;
-
     public event Action Died;
 
     private Health _health;
     
-    public void Awake()
+    public void Init(Health health)
     {
-        _health = new Health(_maxHealth);
+        _health = health;
         _health.Died += Die;
     }
 

@@ -6,7 +6,7 @@ public class AimingState : HierarchicalState
 
     public AimingState(PlayerView view) => _playerView = view;
 
-    protected override void OnEnter() => _playerView.Aim();
+    protected override void OnEnter() => _playerView.Walk();
 
     public override bool CanTransit(State state)
     {

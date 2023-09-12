@@ -84,7 +84,10 @@ MonoBehaviour:
   _muzzleFlash: {fileID: 0}
   _damage: 10
   _shootDistance: 300
-  _reloadTime: 0.2
+  _reloadTime: 0.5
+  _mask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &8087081647312004051
 GameObject:
   m_ObjectHideFlags: 0

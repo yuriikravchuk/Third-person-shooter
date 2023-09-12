@@ -10,6 +10,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private int _damage;
     [SerializeField] private int _shootDistance = 1000;
     [SerializeField] private float _reloadTime = 0.5f;
+    [SerializeField] private LayerMask _mask = new();
 
     public Transform SecondPoint => _secondHandPoint;
 
@@ -18,17 +19,18 @@ public class Gun : MonoBehaviour
     private Ray _ray;
     private Transform _shell;
 
-    public void TryShoot()
+    public void TryShoot() 
     {
         if (Time.time > _lastShotTime + _reloadTime)
         {
             _ray = new Ray(_raySpawn.position, _raySpawn.forward);
-            if(Physics.Raycast(_ray, out _hit, _shootDistance))
+            if(Physics.Raycast(_ray, out _hit, _shootDistance, _mask))
             {
-                if (_hit.collider.TryGetComponent<Enemy>(out var target))
+                if (_hit.collider.TryGetComponent<IDamageable>(out var target))
                 {
                     Shoot(target);
                     _lastShotTime = Time.time;
+                    Debug.Log($"Shoot {_damage}");
                 }
             }
 

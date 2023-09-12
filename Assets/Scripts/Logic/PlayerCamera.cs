@@ -7,7 +7,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Transform _rotationPoint;
     [SerializeField] private GameObject _cube;
     [SerializeField] private LayerMask _mask = new();
-    [SerializeField] private float _sensivity = 1f;
+    private float _sensivity = 0.5f;
 
     public Transform RotationPoint => _rotationPoint;
 
@@ -26,6 +26,11 @@ public class PlayerCamera : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         if (Physics.Raycast(ray, out RaycastHit hit, 999f, _mask))
             _cube.transform.position = hit.point;
+    }
+
+    public void SetSensivity(float value)
+    {
+        _sensivity = value;
     }
 
     public void Rotate(Vector2 delta)
