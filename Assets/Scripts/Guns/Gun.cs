@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 //using enemy;
 
 public class Gun : MonoBehaviour
@@ -7,9 +8,11 @@ public class Gun : MonoBehaviour
     [SerializeField] private Transform _sh_spawn;
     [SerializeField] private Transform _secondHandPoint;
     [SerializeField] private MuzzleFlash _muzzleFlash;
+    [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private int _damage;
     [SerializeField] private int _shootDistance = 1000;
     [SerializeField] private float _reloadTime = 0.5f;
+    [SerializeField] private float _lineDuration = 0.2f;
     [SerializeField] private LayerMask _mask = new();
 
     public Transform SecondPoint => _secondHandPoint;
@@ -18,6 +21,11 @@ public class Gun : MonoBehaviour
     private RaycastHit _hit;
     private Ray _ray;
     private Transform _shell;
+
+    private void Awake()
+    {
+        _lineRenderer.enabled = false;
+    }
 
     public void TryShoot() 
     {
@@ -29,11 +37,12 @@ public class Gun : MonoBehaviour
                 if (_hit.collider.TryGetComponent<IDamageable>(out var target))
                 {
                     Shoot(target);
+                    StartCoroutine(ShowLaser(_hit.point));
                     _lastShotTime = Time.time;
                     Debug.Log($"Shoot {_damage}");
                 }
             }
-
+            
         }
     }
 
@@ -42,6 +51,16 @@ public class Gun : MonoBehaviour
         target.TryTakeDamage(_damage);
         _muzzleFlash.Activate();
         //SpawnShell();
+    }
+
+    private IEnumerator ShowLaser(Vector3 endPosition)
+    {
+        _lineRenderer.SetPosition(0, _raySpawn.position);
+        _lineRenderer.SetPosition(1, endPosition);
+        _lineRenderer.enabled = true;
+        yield return new WaitForSeconds(_lineDuration);
+        _lineRenderer.enabled = false;
+        yield break;
     }
 
     //private void SpawnShell()
