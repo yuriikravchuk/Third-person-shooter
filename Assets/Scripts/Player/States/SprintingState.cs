@@ -13,6 +13,7 @@ public class SprintingState : HierarchicalState
         return state switch
         {
             RunningState => true,
+            JumpingState => true,
             _ => false,
         };
     }
