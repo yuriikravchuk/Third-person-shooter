@@ -4,17 +4,12 @@ using UnityEngine;
 public class PlayState : State
 {
     private readonly PlaySceneUI _playUI;
-    private readonly PlayerInput _playerInput;
+    private readonly GameInput _playerInput;
 
-    public PlayState(PlaySceneUI playUI, PlayerInput playerInput)
+    public PlayState(PlaySceneUI playUI, GameInput playerInput)
     {
         _playUI = playUI;
         _playerInput = playerInput;
-    }
-
-    public override bool CanTransit(State state)
-    {
-        return state is MenuState;
     }
 
     protected override void OnEnter()
@@ -29,5 +24,10 @@ public class PlayState : State
         _playUI.HidePlayUI();
         Cursor.visible = true;
         _playerInput.Player.Disable();
+    }
+
+    protected override void OnUpdate()
+    {
+        
     }
 }

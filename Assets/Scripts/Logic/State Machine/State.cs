@@ -1,24 +1,51 @@
-﻿namespace stateMachine
-{
-    public abstract class State
-    {
-        public virtual void Enter() => OnEnter();
+﻿using System;
+using System.Collections.Generic;
 
-        public virtual void Update()
+namespace stateMachine
+{
+    public abstract class State : IUpdatable
+    {
+        public event Action<State> StateSwitched;
+
+        protected readonly List<Transition> Transitions;
+
+        public State() => Transitions = new List<Transition>();
+
+        public void Update()
         {
-            OnUpdate();
             TryTransit();
+            OnUpdate();
         }
 
-        public virtual void Exit() => OnExit();
+        public void TryTransit()
+        {
+            foreach (var transition in Transitions)
+            {
+                if (transition.CanTransit)
+                    StateSwitched.Invoke(transition.Target);
+            }
+        }
 
-        public abstract bool CanTransit(State state);
+        public void AddTransition(Transition transition) => Transitions.Add(transition);
 
-        protected virtual void OnExit() { }
-        protected virtual void OnEnter() { }
-        protected virtual void OnUpdate() { }
+        public void Enter()
+        {
+            foreach (var transition in Transitions)
+                transition.Enable();
 
-        public virtual void TryTransit() { }
+            OnEnter();
+        }
 
+        public void Exit()
+        {
+            foreach (var transition in Transitions)
+                transition.Disable();
+
+            OnExit();
+        }
+
+        protected abstract void OnExit();
+        protected abstract void OnEnter();
+        protected abstract void OnUpdate();
     }
 }

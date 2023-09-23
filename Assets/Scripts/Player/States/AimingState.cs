@@ -1,19 +1,14 @@
 ﻿using stateMachine;
 
-public class AimingState : HierarchicalState 
+public class AimingState : State 
 {
     private readonly PlayerView _playerView;
 
     public AimingState(PlayerView view) => _playerView = view;
 
+    protected override void OnExit() { }
+
     protected override void OnEnter() => _playerView.Walk();
 
-    public override bool CanTransit(State state)
-    {
-        return state switch
-        {
-            RunningState => true,
-            _ => false,
-        };
-    }
+    protected override void OnUpdate() { }
 }

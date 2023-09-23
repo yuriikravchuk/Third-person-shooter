@@ -1,28 +1,19 @@
 ﻿using stateMachine;
-
-public class JumpingState : HierarchicalState
+public class JumpingState : State
 {
     private readonly PlayerView _playerView;
 
     public JumpingState(PlayerView playerView) => _playerView = playerView;
 
-    protected override void OnEnter()
+    protected override void OnEnter() => _playerView.AddJumpForce();
+
+    protected override void OnExit()
     {
-        _playerView.AddJumpForce();
+
     }
 
-    public override bool CanTransit(State state)
+    protected override void OnUpdate()
     {
-        return state switch
-        {
-            RunningState => true,
-            _ => false,
-        };
-    }
-
-    public override void TryTransit()
-    {
-        if (_playerView.IsGrounded())
-            SuperState.TrySetSubState<RunningState>();
+        
     }
 }

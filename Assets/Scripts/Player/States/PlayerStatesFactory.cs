@@ -1,16 +1,17 @@
 using stateMachine;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static GameInput;
 
 public class PlayerStatesFactory
 {
     private readonly PlayerView _playerView;
-    private readonly PlayerInput _inputs;
+    private readonly PlayerActions _inputs;
     private readonly Transform _target;
     private readonly GunHandler _gunHandler;
     private readonly Transform _camera;
-    public PlayerStatesFactory(PlayerView playerView, PlayerInput inputs, Transform target, GunHandler gunHandler, Transform camera) 
+    public PlayerStatesFactory(PlayerView playerView, PlayerActions inputs, Transform target, GunHandler gunHandler, Transform camera) 
     {
         _playerView = playerView;
         _inputs = inputs;
@@ -19,24 +20,53 @@ public class PlayerStatesFactory
         _camera = camera;
     }
 
-    public List<HierarchicalState> GetStates()
+    public List<State> GetStates()
     {
         var runningState = new RunningState(_playerView);
         var sprintingState = new SprintingState(_playerView);
         var aimingState = new AimingState(_playerView);
         var jumpingState = new JumpingState(_playerView);
-        return new List<HierarchicalState>() {
-            new DisarmedState(
-                new List<HierarchicalState>() {
-                    runningState,
-                    sprintingState,
-                    jumpingState }, _playerView, _inputs, _camera),
-            new ArmedState(
-                new List<HierarchicalState>() {
-                    runningState,
-                    sprintingState,
-                    aimingState,
-                    jumpingState
-                }, _gunHandler, _playerView, _inputs, _target ) };
+
+        var disarmedState = new StateMachine(new List<State>() { runningState, sprintingState, jumpingState }, 0,
+            new DisarmedState( _playerView, _inputs, _camera));
+
+        var armedState = new StateMachine(new List<State>() { runningState, sprintingState, aimingState, jumpingState }, 0,
+            new ArmedState(_gunHandler, _playerView, _inputs, _target));
+
+        var aimToRun = new SwitchTransition(runningState);
+        _inputs.Aim.canceled += e => aimToRun.EnableCondition();
+
+        var runToSprint = new SwitchTransition(sprintingState);
+        _inputs.Sprint.started += e => runToSprint.EnableCondition();
+
+        var runToJump = new SwitchTransition(jumpingState);
+        _inputs.Jump.started += e => runToJump.EnableCondition();
+
+        var runToAim = new SwitchTransition(aimingState);
+        _inputs.Aim.started += e => runToAim.EnableCondition();
+
+        var sprintToJump = new SwitchTransition(jumpingState);
+        _inputs.Jump.started += e => sprintToJump.EnableCondition();
+
+        var sprintToRun = new SwitchTransition(runningState);
+        _inputs.Sprint.canceled += e => sprintToRun.EnableCondition();
+
+        var armedToDisarmed = new SwitchTransition(disarmedState);
+        _gunHandler.Disarmed += armedToDisarmed.EnableCondition;
+
+        var disarmedToArmed = new SwitchTransition(armedState);
+        _gunHandler.Armed += disarmedToArmed.EnableCondition;
+
+        disarmedState.AddTransition(disarmedToArmed);
+        armedState.AddTransition(armedToDisarmed);
+        aimingState.AddTransition(aimToRun);
+        runningState.AddTransition(runToSprint);
+        runningState.AddTransition(runToJump);
+        runningState.AddTransition(runToAim);
+        sprintingState.AddTransition(sprintToJump);
+        sprintingState.AddTransition(sprintToRun);
+        jumpingState.AddTransition(new ConditionTransition(runningState, _playerView.IsGrounded));
+
+        return new List<State>() {disarmedState, armedState};
     }
 }

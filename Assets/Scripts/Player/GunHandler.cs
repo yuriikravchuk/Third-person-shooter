@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -11,8 +10,19 @@ public class GunHandler : MonoBehaviour
     [SerializeField] private RigBuilder _rigBuilder;
     [SerializeField] private TwoBoneIKConstraint _leftHandConstraint;
 
-    public event Action Armed;
-    public event Action DisArmed;
+    public event Action Armed
+    {
+        add => _armed += value;
+        remove => _armed -= value;
+    }
+
+    public event Action Disarmed
+    {
+        add => _disarmed += value;
+        remove => _disarmed -= value;
+    }
+
+    private event Action _armed, _disarmed;
 
     public Transform SecondHandPoint => _currentGun?.SecondPoint;
 
@@ -41,7 +51,7 @@ public class GunHandler : MonoBehaviour
         _currentGun.gameObject.SetActive(false);
         _currentGun = null;
         _leftHandRig.weight = 0;
-        DisArmed?.Invoke();
+        _disarmed?.Invoke();
     }
 
     private void Arm(Gun gun)
@@ -52,6 +62,6 @@ public class GunHandler : MonoBehaviour
         _leftHandRig.weight = 1;
         _leftHandConstraint.data.target = SecondHandPoint; 
         _rigBuilder.Build();
-        Armed?.Invoke();
+        _armed?.Invoke();
     }
 }
