@@ -7,13 +7,7 @@ public class JumpingState : State
 
     protected override void OnEnter() => _playerView.AddJumpForce();
 
-    protected override void OnExit()
-    {
+    protected override void OnUpdate() { }
 
-    }
-
-    protected override void OnUpdate()
-    {
-        
-    }
+    protected override void OnExit() { }
 }

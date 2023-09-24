@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace stateMachine
 {
@@ -31,6 +33,9 @@ namespace stateMachine
 
         private void SwitchState(State state)
         {
+            if (_subStates.Contains(state) == false)
+                throw new InvalidOperationException();
+
             _currentSubState.Exit();
             _currentSubState = state;
             _currentSubState.Enter();

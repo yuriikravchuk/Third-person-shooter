@@ -5,9 +5,15 @@ namespace stateMachine
 {
     public abstract class State : IUpdatable
     {
-        public event Action<State> StateSwitched;
+        public event Action<State> StateSwitched
+        {
+            add => _stateSwitched += value;
+            remove => _stateSwitched -= value;
+        }
 
         protected readonly List<Transition> Transitions;
+
+        private event Action<State> _stateSwitched;
 
         public State() => Transitions = new List<Transition>();
 
@@ -22,7 +28,7 @@ namespace stateMachine
             foreach (var transition in Transitions)
             {
                 if (transition.CanTransit)
-                    StateSwitched.Invoke(transition.Target);
+                    _stateSwitched.Invoke(transition.Target);
             }
         }
 

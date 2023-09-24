@@ -15,8 +15,5 @@ public class Player : MonoBehaviour, IDamageable, IDieable
 
     public void TryTakeDamage(int value) => _health.ApplyDamage(value);
 
-    public void Die()
-    {
-        Died?.Invoke();
-    }
+    public void Die() => Died?.Invoke();
 }

@@ -19,8 +19,7 @@ public class DisarmedState : State
         _playerInput.Move.performed += e => _moveVector = e.ReadValue<Vector2>();
         _playerInput.Move.canceled += e => _moveVector = Vector2.zero;
     }
-
-    protected override void OnExit() { }
+    protected override void OnEnter() => _playerView.SetDisarmed();
 
     protected override void OnUpdate()
     {
@@ -28,5 +27,5 @@ public class DisarmedState : State
         _playerView.Rotate(_camera.TransformDirection(new Vector3(_moveVector.x, 0, _moveVector.y)));
     }
 
-    protected override void OnEnter() => _playerView.SetDisarmed();
+    protected override void OnExit() { }
 }

@@ -11,15 +11,4 @@ public class RunningState : State
     protected override void OnEnter() => _playerView.Run();
 
     protected override void OnUpdate() { }
-
-    //public override bool CanTransit(State state)
-    //{
-    //    return state switch
-    //    {
-    //        AimingState => true,
-    //        SprintingState => true,
-    //        JumpingState => true,
-    //        _ => false,
-    //    };
-    //}
 }

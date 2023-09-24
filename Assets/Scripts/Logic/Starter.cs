@@ -24,18 +24,21 @@ public class Starter : MonoBehaviour
         gameInput.Enable();
         var gameStateMachine = GetGameStateMachine(gameInput);
         var playerStateMachine = GetPlayerStateMachine(gameInput.Player);
-        InitPlayer(gameInput);
+        InitPlayer(gameInput.Player);
 
         _updater.Init(new List<IUpdatable> {gameStateMachine, playerStateMachine });
     }
 
-    private void InitPlayer(GameInput playerInput)
+    private void InitPlayer(PlayerActions playerInput)
     {
         var health = new Health(_maxPlayerHealth);
         _healthView.Init(_maxPlayerHealth);
         health.ValueChanged += _healthView.OnValueChanged;
-        playerInput.Player.View.performed += e => _playerCamera.Rotate(e.ReadValue<Vector2>());
+        playerInput.View.performed += e => _playerCamera.Rotate(e.ReadValue<Vector2>());
         _player.Init(health);
+        playerInput.First_Weapon.performed += e => _gunHandler.OnGunSelected(0);
+        playerInput.Second_Weapon.performed += e => _gunHandler.OnGunSelected(1);
+        playerInput.Third_Weapon.performed += e => _gunHandler.OnGunSelected(2);
     }
 
     private StateMachine GetPlayerStateMachine(PlayerActions playerInput)
@@ -61,6 +64,5 @@ public class Starter : MonoBehaviour
 
         var gameStates = new List<State>() { playState, menuState };
         return new StateMachine(gameStates);
-
     }
 }
