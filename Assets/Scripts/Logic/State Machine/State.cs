@@ -12,15 +12,42 @@ namespace stateMachine
         }
 
         protected readonly List<Transition> Transitions;
+        protected bool Enabled { get; private set; }
 
+        private readonly State _subState;
         private event Action<State> _stateSwitched;
 
-        public State() => Transitions = new List<Transition>();
+        public State(State substate = null)
+        {
+            Transitions = new List<Transition>();
+            _subState = substate;
+        }
 
         public void Update()
         {
             TryTransit();
             OnUpdate();
+            _subState?.Update();
+        }
+
+        public void Enter()
+        {
+            foreach (var transition in Transitions)
+                transition.Enable();
+
+            OnEnter();
+            _subState?.Enter();
+            Enabled = true;
+        }
+
+        public void Exit()
+        {
+            foreach (var transition in Transitions)
+                transition.Disable();
+
+            OnExit();
+            _subState?.Exit();
+            Enabled = false;
         }
 
         public void TryTransit()
@@ -34,24 +61,8 @@ namespace stateMachine
 
         public void AddTransition(Transition transition) => Transitions.Add(transition);
 
-        public void Enter()
-        {
-            foreach (var transition in Transitions)
-                transition.Enable();
-
-            OnEnter();
-        }
-
-        public void Exit()
-        {
-            foreach (var transition in Transitions)
-                transition.Disable();
-
-            OnExit();
-        }
-
-        protected abstract void OnExit();
-        protected abstract void OnEnter();
-        protected abstract void OnUpdate();
+        protected virtual void OnExit() { }
+        protected virtual void OnEnter() { }
+        protected virtual void OnUpdate() { }
     }
 }

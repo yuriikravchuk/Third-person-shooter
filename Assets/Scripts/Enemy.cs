@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable, IDieable
+[RequireComponent(typeof(Health))]
+public class Enemy : MonoBehaviour, IDieable
 {
     [SerializeField] private Gun _gun;
     [SerializeField] private Animator _animator;
@@ -26,7 +27,6 @@ public class Enemy : MonoBehaviour, IDamageable, IDieable
             _animator.SetBool("finded_player", false);
             _findedPlayer = false;
         }
-
     }
 
     private void Update()
@@ -34,17 +34,15 @@ public class Enemy : MonoBehaviour, IDamageable, IDieable
         if (_findedPlayer)
         {
             transform.LookAt(_player.transform.position);
-            _gun.TryShoot();
+            _gun.TryFire();
         }
     }
 
     private void Awake()
     {
-        _health = new Health(30);
+        _health = GetComponent<Health>();
         _health.Died += Die;
     }
 
     public void Die() => Destroy(gameObject);
-
-    public void TryTakeDamage(int value) => _health.ApplyDamage(value);
 }

@@ -6,9 +6,10 @@ using UnityEngine.Animations.Rigging;
 public class GunHandler : MonoBehaviour
 {
     [SerializeField] private List<Gun> _guns;
-    [SerializeField] private Rig _leftHandRig;
-    [SerializeField] private RigBuilder _rigBuilder;
-    [SerializeField] private TwoBoneIKConstraint _leftHandConstraint;
+    [SerializeField] private MultiAimConstraint _bodyIK;
+    [SerializeField] private MultiAimConstraint _headIK;
+    [SerializeField] private MultiAimConstraint _weaponIK;
+    [SerializeField] private TwoBoneIKConstraint _leftHandIK;
 
     public event Action Armed
     {
@@ -39,18 +40,22 @@ public class GunHandler : MonoBehaviour
 
     }
 
-    public void TryFire()
-    {
-        if (_currentGun == null) return;
+    public void TryFire() => _currentGun?.TryFire();
 
-        _currentGun.TryShoot();
+    public void SetBodyIKWeight(float weight) => _bodyIK.weight = weight;
+
+    public void SetHeadIKWeight(float weight) => _headIK.weight = weight;
+
+    public void SetWeaponIKWeight(float weight)
+    {
+        _weaponIK.weight = weight;
+        _leftHandIK.weight = weight;
     }
 
     private void Disarm()
     {
         _currentGun.gameObject.SetActive(false);
         _currentGun = null;
-        _leftHandRig.weight = 0;
         _disarmed?.Invoke();
     }
 
@@ -59,9 +64,6 @@ public class GunHandler : MonoBehaviour
         _currentGun?.gameObject.SetActive(false);
         _currentGun = gun;
         _currentGun.gameObject.SetActive(true);
-        _leftHandRig.weight = 1;
-        _leftHandConstraint.data.target = SecondHandPoint; 
-        _rigBuilder.Build();
         _armed?.Invoke();
     }
 }

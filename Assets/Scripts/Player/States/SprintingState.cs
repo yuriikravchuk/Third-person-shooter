@@ -2,9 +2,9 @@
 
 public class SprintingState : State
 {
-    private readonly PlayerView _playerView;
+    private readonly AnimationView _playerView;
 
-    public SprintingState(PlayerView playerView) => _playerView = playerView;
+    public SprintingState(AnimationView playerView) => _playerView = playerView;
 
     protected override void OnExit() { }
 

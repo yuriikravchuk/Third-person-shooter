@@ -1,10 +1,10 @@
 ﻿using stateMachine;
 
-public class AimingState : State 
+public class WalkingState : State 
 {
-    private readonly PlayerView _playerView;
+    private readonly AnimationView _playerView;
 
-    public AimingState(PlayerView view) => _playerView = view;
+    public WalkingState(AnimationView view) => _playerView = view;
 
     protected override void OnExit() { }
 
@@ -12,3 +12,4 @@ public class AimingState : State
 
     protected override void OnUpdate() { }
 }
+

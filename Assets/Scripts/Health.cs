@@ -1,20 +1,23 @@
 ﻿using System;
-public class Health
+using UnityEngine;
+using UnityEngine.InputSystem.Haptics;
+
+public class Health : MonoBehaviour, IDamageable
 {
-    public float Value { get; private set; }
+    [SerializeField] private int _maxValue;
+
+    public int Value { get; private set; }
     public bool Damageable { get; set; } = true;
     public event Action Died;
-    public event Action<float> ValueChanged;
-
-    private readonly int _maxValue;
+    public event Action<int> ValueChanged;
 
     public Health(int maxValue)
     {
         _maxValue = maxValue;
-        Reset();
+        ResetHealth();
     }
 
-    public void ApplyDamage(int damage)
+    public void TakeDamage(int damage)
     {
         if (Damageable == false) return;
         if (damage < 0) throw new ArgumentOutOfRangeException(nameof(damage));
@@ -40,5 +43,5 @@ public class Health
             Value = _maxValue;
     }
 
-    public void Reset() => Value = _maxValue;
+    public void ResetHealth() => Value = _maxValue;
 }

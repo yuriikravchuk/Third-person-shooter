@@ -10,9 +10,9 @@ public class Updater : MonoBehaviour
         _updatables = updatables;
     }
 
-    void Update()
+    private void Update()
     {
-        foreach(var updatable in _updatables)
+        foreach (var updatable in _updatables)
             updatable.Update();
     }
 }

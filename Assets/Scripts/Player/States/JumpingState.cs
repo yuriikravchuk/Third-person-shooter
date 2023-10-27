@@ -1,9 +1,9 @@
 ﻿using stateMachine;
 public class JumpingState : State
 {
-    private readonly PlayerView _playerView;
+    private readonly PhysicsView _playerView;
 
-    public JumpingState(PlayerView playerView) => _playerView = playerView;
+    public JumpingState(PhysicsView playerView) => _playerView = playerView;
 
     protected override void OnEnter() => _playerView.AddJumpForce();
 

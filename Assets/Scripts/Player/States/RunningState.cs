@@ -2,9 +2,9 @@
 
 public class RunningState : State
 {
-    private readonly PlayerView _playerView;
+    private readonly AnimationView _playerView;
 
-    public RunningState(PlayerView playerView) => _playerView = playerView;
+    public RunningState(AnimationView playerView) => _playerView = playerView;
 
     protected override void OnExit() { }
 

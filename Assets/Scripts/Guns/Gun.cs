@@ -27,29 +27,28 @@ public class Gun : MonoBehaviour
         _lineRenderer.enabled = false;
     }
 
-    public void TryShoot() 
+    public void TryFire() 
     {
         if (Time.time > _lastShotTime + _reloadTime)
         {
             _ray = new Ray(_raySpawn.position, _raySpawn.forward);
             if(Physics.Raycast(_ray, out _hit, _shootDistance, _mask))
             {
+                Shoot();
+
                 if (_hit.collider.TryGetComponent<IDamageable>(out var target))
-                {
-                    Shoot(target);
-                    StartCoroutine(ShowLaser(_hit.point));
-                    _lastShotTime = Time.time;
-                    Debug.Log($"Shoot {_damage}");
-                }
+                    target.TakeDamage(_damage);
             }
             
         }
     }
 
-    private void Shoot(IDamageable target)
+    private void Shoot()
     {
-        target.TryTakeDamage(_damage);
+        StartCoroutine(ShowLaser(_hit.point));
         _muzzleFlash.Activate();
+        _lastShotTime = Time.time;
+        Debug.Log("Shoot");
         //SpawnShell();
     }
 
