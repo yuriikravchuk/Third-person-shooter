@@ -2,6 +2,8 @@
 
 A third-person shooter prototype in Unity 2021.3. Its focus is the player controller: a hierarchical state machine drives movement and shooting, and Animation Rigging makes the body, head and weapon follow the aim.
 
+**Windows build:** download it from [Releases](../../releases) (September 2023). The latest commit on `main` is an unfinished refactor of the player controller and does not run; the release build is the playable version.
+
 ## Features
 
 - Walk, run, sprint and jump, with aiming available while moving.
